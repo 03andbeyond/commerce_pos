@@ -1,0 +1,7 @@
+name: Commerce POS Admin
+type: module
+description: Provides Admin Functionality for Commerce POS
+core: 8.x
+package: Commerce
+dependencies:
+  - commerce_pos

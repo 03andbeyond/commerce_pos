@@ -1,0 +1,124 @@
+<?php
+
+
+
+/**
+ * @file
+ * Contains commerce_pos_admin.module.
+ */
+
+namespace Drupal\commerce_pos_admin\Form;
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+use Drupal\Core\Form\ConfigFormBase;
+use Drupal\Core\Form\FormStateInterface;
+
+
+// possibly knowing every field early on and minimizing how much configuration is needed would be useful. 
+
+/**
+ * Implements hook_help().
+ */
+function commerce_pos_admin_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    $output = "A better help section for commerce pos";
+      return $output;
+
+    default:
+  }
+}
+
+
+
+namespace Drupal\example\Form;
+
+use Drupal\Core\Form\ConfigFormBase;
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Configure example settings for this site.
+ */
+class CommercePosSettingsForm extends ConfigFormBase {
+  /** 
+   * {@inheritdoc}
+   */
+  public function getFormId() {
+    return 'commerce_pos_admin_settings';
+  }
+
+  /** 
+   * {@inheritdoc}
+   */
+  protected function getEditableConfigNames() {
+    return [
+      'commerce_pos_admin.settings',
+    ];
+  }
+
+  /** 
+   * {@inheritdoc}
+   */
+  
+ $product_options = array();
+  public function buildForm(array $form, FormStateInterface $form_state) {
+    $config = $this->config('example.settings');
+
+    $form['product_settings']['commerce_pos_available_products'] = array(
+      '#type' => 'textfield',
+      '#title' => $this->t('Available Products'),
+      
+      // might be a newer way to do this
+      '#options' => $product_options,
+      '#default_value' => $config->get('commerce_pos_available_products'),
+    );  
+
+
+    // In the D7 module some light meta programmming was being utlized to generate a form for field options for each product type. Need to investigate the best way to do this in D8
+    
+    //possibly loading all the entity modules before hand and looping and doing generation a bit cleaner could be better. 
+    $form['product_settings']['product_types'] = array(
+      '#type' => 'textfield',
+      '#title' => $this->t('Other things'),
+      '#default_value' => $config->get('other_things'),
+    );  
+    
+    
+    $form['product_settings']['product_search'] = array(
+      '#type' => 'textfield',
+      '#title' => $this->t('Search'),
+      '#default_value' => $config->get('product_search'),
+    );  
+    
+    // need to investigate more seach api details in d8 to realize the best way to accomplish.
+    
+    // if works the same way then a series of search api fields are required.
+    
+    $form['product_settings']['product_payments'] = array(
+      '#type' => 'textfield',
+      '#title' => $this->t('Product Payments'),
+      '#default_value' => $config->get('product_payments_default_payment_method'),
+    );  
+
+    return parent::buildForm($form, $form_state);
+  }
+
+  /** 
+   * {@inheritdoc}
+   */
+  public function submitForm(array &$form, FormStateInterface $form_state) {
+    
+      \Drupal::configFactory()->getEditable('commerce_pos_admin.settings')
+      // Set the submitted configuration setting
+      ->set('things', $form_state->getValue('example_thing'))
+        
+        /* Need to verify if form values and settings are correct and reflect the nature of how settings will be handled before any save functionality is done. */
+        
+        
+      ->set('other_things', $form_state->getValue('other_things'))
+      ->save();
+
+      //validation of course needed as well
+    parent::submitForm($form, $form_state);
+  }
+}

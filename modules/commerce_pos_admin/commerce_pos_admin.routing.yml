@@ -1,0 +1,7 @@
+commerce_pos.settings:
+  path: '/admin/structure/commerce_pos/settings'
+  defaults:
+    _form: '\Drupal\example\Form\CommercePosSettingsForm'
+    _title: 'Commerce POS'
+  requirements:
+    _permission: 'administer Commerce Pos settings'
